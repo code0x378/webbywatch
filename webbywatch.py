@@ -1,15 +1,15 @@
 import logging
-import sys
 import random
+import smtplib
+import sys
+import time
 
 import requests
 from bs4 import BeautifulSoup
-import time
-import smtplib
 
 from settings import *
 
-logger = logging.getLogger("webby")
+logger = logging.getLogger()
 
 
 def check_url(url, keywords):
@@ -20,7 +20,7 @@ def check_url(url, keywords):
 
 
 def no_changes_found(url):
-    logger.info(f"Checked {url} and found no changes")
+    logger.info("Checked %s and found no changes", url)
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
     handler.setFormatter(formatter)
     screen_handler = logging.StreamHandler(stream=sys.stdout)
     screen_handler.setFormatter(formatter)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     logger.addHandler(handler)
     logger.addHandler(screen_handler)
 
@@ -39,12 +39,13 @@ def main():
             if changed:
                 still_changed = check_url(url, keywords)
                 if still_changed:
-                    logger.warning(f"Checked {url} and FOUND CHANGES!")
+                    logger.warning("Checked %s and FOUND CHANGES!", url)
                     email_msg = f'Subject: WebbyWatch, {url} changed!\n\nThe following url was updated: {url}'
                     email_from = EMAIL_FROM
                     email_to = [EMAIL_TO]
                     server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
-                    server.starttls()
+                    if EMAIL_USE_TLS:
+                        server.starttls()
                     server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
                     server.sendmail(email_from, email_to, email_msg)
                     server.quit()
