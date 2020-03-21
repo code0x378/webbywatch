@@ -25,7 +25,7 @@ def no_changes_found(url):
 
 def main():
     formatter = logging.Formatter(fmt='%(asctime)s:%(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    handler = logging.FileHandler('webbywatch.log', mode='w')
+    handler = logging.FileHandler('webbywatch.log', mode='a')
     handler.setFormatter(formatter)
     screen_handler = logging.StreamHandler(stream=sys.stdout)
     screen_handler.setFormatter(formatter)

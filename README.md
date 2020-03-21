@@ -3,11 +3,11 @@ when keywords are no longer included in the page content.  I use it to be notifi
 
 # Requirements
 
-* python
+* python 3
 
 # Installation
 
-Rename .env.example to .env and edit the contents as needed
+Rename settings.example.py to settings.py and edit the content as needed
 
 ```
 python -m venv venv
