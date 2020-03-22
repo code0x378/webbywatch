@@ -1,4 +1,6 @@
 import logging
+import os
+import platform
 import random
 import smtplib
 import sys
@@ -23,6 +25,11 @@ def no_changes_found(url):
     logger.info("Checked %s and found no changes", url)
 
 
+def notify(title, text):
+    if platform.system() == "Darwin":
+        os.system(f"osascript -e 'display notification \"{text}\" with title \"{title}\"'")
+
+
 def main():
     formatter = logging.Formatter(fmt='%(asctime)s:%(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     handler = logging.FileHandler('webbywatch.log', mode='a')
@@ -40,6 +47,7 @@ def main():
                 still_changed = check_url(url, keywords)
                 if still_changed:
                     logger.warning("Checked %s and FOUND CHANGES!", url)
+                    notify("WebbyWatch", f"The following url changed:\n{url}")
                     email_msg = f'Subject: WebbyWatch, {url} changed!\n\nThe following url was updated: {url}'
                     email_from = EMAIL_FROM
                     email_to = [EMAIL_TO]
