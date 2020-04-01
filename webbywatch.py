@@ -7,18 +7,17 @@ import sys
 import time
 
 import requests
-from bs4 import BeautifulSoup
 
 from settings import *
 
 logger = logging.getLogger()
 
 
-def check_url(url, keywords):
+def check_url(url, keywords, causeDelay=True):
     response = requests.get(url, headers=HEADERS)
-    soup = BeautifulSoup(response.text, "lxml")
-    time.sleep(random.randint(DELAY_BETWEEN_URLS_MIN, DELAY_BETWEEN_URLS_MAX))
-    return str(soup).find(keywords) < 0
+    if causeDelay:
+        time.sleep(random.randint(DELAY_BETWEEN_URLS_MIN, DELAY_BETWEEN_URLS_MAX))
+    return response.text.find(keywords) < 0
 
 
 def no_changes_found(url):
