@@ -1,8 +1,6 @@
 import logging
 import sys
 
-import pytest
-
 from webbywatch import no_changes_found, check_url
 
 
@@ -17,6 +15,6 @@ def test_no_changes_found(capsys):
     assert out == 'Checked http://www.example.com and found no changes\n'
 
 
-def test_check_url() :
+def test_check_url():
     assert check_url("https://www.example.com", "Example Domain", False) == False
     assert check_url("https://www.example.com", "Hot Lovin", False) == True
