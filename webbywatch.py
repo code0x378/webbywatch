@@ -24,6 +24,20 @@ def no_changes_found(url):
     logger.info("Checked %s and found no changes", url)
 
 
+def changes_found(url):
+    logger.warning("Checked %s and FOUND CHANGES!", url)
+    notify("WebbyWatch", f"The following url changed:\n{url}")
+    email_msg = f'Subject: WebbyWatch, {url} changed!\n\nThe following url was updated: {url}'
+    email_from = EMAIL_FROM
+    email_to = [EMAIL_TO]
+    server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
+    if EMAIL_USE_TLS:
+        server.starttls()
+    server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+    server.sendmail(email_from, email_to, email_msg)
+    server.quit()
+
+
 def notify(title, text):
     if platform.system() == "Darwin":
         os.system(f"osascript -e 'display notification \"{text}\" with title \"{title}\"'")
@@ -45,17 +59,7 @@ def main():
             if changed:
                 still_changed = check_url(url, keywords)
                 if still_changed:
-                    logger.warning("Checked %s and FOUND CHANGES!", url)
-                    notify("WebbyWatch", f"The following url changed:\n{url}")
-                    email_msg = f'Subject: WebbyWatch, {url} changed!\n\nThe following url was updated: {url}'
-                    email_from = EMAIL_FROM
-                    email_to = [EMAIL_TO]
-                    server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
-                    if EMAIL_USE_TLS:
-                        server.starttls()
-                    server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-                    server.sendmail(email_from, email_to, email_msg)
-                    server.quit()
+                    changes_found(url)
                 else:
                     no_changes_found(url)
             else:
